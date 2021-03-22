@@ -5,7 +5,9 @@ import UserAlbums from "./UserAlbums";
 
 export default function App() {
   const [users, setUsers] = useState([]);
-  const [click, setClick] = useState(false);
+  const [currentId, setCurrentId] = useState();
+  const [albums, setAlbums] = useState([]);
+
   
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -16,23 +18,31 @@ export default function App() {
       });
   }, []);
 
-  function handleClick(e){
-    setClick(!click)
-   const id =  e.target.parentNode.getAttribute("id")
 
-  }
+  useEffect(() => {
+      fetch(`https://jsonplaceholder.typicode.com/albums?userId=${currentId}`)
+        .then((response) => response.json())
+        .then(setAlbums)
+        .catch((error) => {
+          console.log(error);
+        });
+    }, [currentId]);
+
+   
   return (  
   <div>
+      <div>
     <ul>
        {
-         users.map((user ,index) => 
-          <li key={index} id={user.id}>{user.name}: <button onClick={handleClick}>{user.email}</button> <UserAlbums userId={user.id}/></li>
-         
+         users.map((user) => 
+          <li key={user.id}>{user.name}: <button type="button" onClick={() => setCurrentId(user.id)}>{user.email}</button></li>
      )}
-    
     </ul>
-  
-    
-    </div>
+  </div>
+  <div>
+    <UserAlbums  albums={albums} />
+  </div>
+
+  </div>
   );
 }
