@@ -5,6 +5,7 @@ import UserAlbums from "./UserAlbums";
 
 export default function App() {
   const [users, setUsers] = useState([]);
+  const [click, setClick] = useState(false);
   
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -15,12 +16,20 @@ export default function App() {
       });
   }, []);
 
+  function handleClick(e){
+    setClick(!click)
+   const id =  e.target.parentNode.getAttribute("id")
+
+  }
   return (  
   <div>
     <ul>
-       {users.map((user) => 
-          <li>{user.name}: <button>{user.email}</button></li>
+       {
+         users.map((user ,index) => 
+          <li key={index} id={user.id}>{user.name}: <button onClick={handleClick}>{user.email}</button> <UserAlbums userId={user.id}/></li>
+         
      )}
+    
     </ul>
   
     
