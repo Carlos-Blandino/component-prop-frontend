@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import UserAlbums from "./UserAlbums";
 
 
-
 export default function App() {
   const [users, setUsers] = useState([]);
-  const [currentId, setCurrentId] = useState();
-  const [albums, setAlbums] = useState([]);
+  const [userId, setUserId] = useState();
+  const [name, setName] = useState("");
 
-  
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
@@ -17,32 +15,26 @@ export default function App() {
         console.log(error);
       });
   }, []);
-
-
-  useEffect(() => {
-      fetch(`https://jsonplaceholder.typicode.com/albums?userId=${currentId}`)
-        .then((response) => response.json())
-        .then(setAlbums)
-        .catch((error) => {
-          console.log(error);
-        });
-    }, [currentId]);
-
-   
+function clickHandler(id, name){
+  setName(name);
+  setUserId(id);
+}
   return (  
-  <div>
+  <div style={{display:"flex", flexDirection:"row"}}>
       <div>
     <ul>
        {
          users.map((user) => 
-          <li key={user.id}>{user.name}: <button type="button" onClick={() => setCurrentId(user.id)}>{user.email}</button></li>
-     )}
-    </ul>
-  </div>
-  <div>
-    <UserAlbums  albums={albums} />
-  </div>
-
+          <li key={user.id}>Name: {user.name} 
+         <div>Email: {user.email}</div>
+         <div><button  type="button" onClick={() => clickHandler(user.id, user.name)}>View Albums</button></div><br/> </li>
+     )}    
+     </ul>
+     </div>
+      <div>
+      <h1>{name}</h1>
+           <UserAlbums  userId={userId} />
+      </div>
   </div>
   );
 }
